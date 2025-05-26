@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>บอทนำบาคาร่า</title>
+  <style>
+    body {
+      background-color: #1a1a1a;
+      color: #fff;
+      font-family: 'Arial', sans-serif;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #00ffcc;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 18px;
+      border-radius: 8px;
+      border: none;
+      background: #333;
+      color: #fff;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #00cc99;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #009973;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 24px;
+      text-align: center;
+      color: #00ffcc;
+    }
+  </style>
+</head>
+<body>
+  <h1>บอทนำบาคาร่า</h1>
+  <label for="history">กรอกผลย้อนหลัง (เช่น BPBBP):</label>
+  <input type="text" id="history" placeholder="B = Banker, P = Player">
+  <button onclick="predict()">วิเคราะห์</button>
+  <div class="result" id="result">แทงฝั่งถัดไป: -</div>
+
+  <script>
+    function predict() {
+      const input = document.getElementById('history').value.toUpperCase().replace(/[^BP]/g, '');
+      const resultDiv = document.getElementById('result');
+      const history = input.split('');
+
+      localStorage.setItem('history', input); // บันทึกย้อนหลัง
+
+      if (history.length < 3) {
+        resultDiv.textContent = 'แทงฝั่งถัดไป: รอดูเพิ่ม';
+        return;
+      }
+
+      let result = history[history.length - 1];
+
+      if (history[history.length - 1] === history[history.length - 2] &&
+          history[history.length - 2] === history[history.length - 3]) {
+        result = history[history.length - 1]; // มังกร
+      } else if (history[history.length - 1] !== history[history.length - 2] &&
+                 history[history.length - 2] !== history[history.length - 3]) {
+        result = history[history.length - 1] === 'P' ? 'B' : 'P'; // ปิงปอง
+      } else {
+        result = history[history.length - 1] === 'P' ? 'B' : 'P'; // เดา default
+      }
+
+      resultDiv.textContent = 'แทงฝั่งถัดไป: ' + (result === 'B' ? 'Banker' : 'Player');
+    }
+
+    window.onload = function () {
+      const saved = localStorage.getItem('history');
+      if (saved) {
+        document.getElementById('history').value = saved;
+        predict();
+      }
+    };
+  </script>
+</body>
+</html>
